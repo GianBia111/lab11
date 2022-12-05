@@ -95,12 +95,15 @@ namespace Iterators
         /// <returns>the new sequence.</returns>
         public static TOther Reduce<TAny, TOther>(this IEnumerable<TAny> sequence, TOther seed, Func<TOther, TAny, TOther> reducer)
         {
-            bool first = false;
+            bool first = true;
             TOther accumulator = default;
             foreach(TAny el in sequence)
             {
                 if (first)
+                {
                     accumulator = reducer(seed, el);
+                    first = false;
+                }
                 else
                     accumulator = reducer(accumulator, el);
             }
@@ -146,7 +149,13 @@ namespace Iterators
         /// <returns>the new sequence.</returns>
         public static IEnumerable<TAny> SkipSome<TAny>(this IEnumerable<TAny> sequence, long count)
         {
-            throw new NotImplementedException();
+            foreach (var el in sequence)
+            {
+                if (count-- <= 0)
+                    continue;
+
+                yield return el;
+            }
         }
 
         /// <summary>
@@ -161,7 +170,13 @@ namespace Iterators
         /// <returns>the new sequence.</returns>
         public static IEnumerable<TAny> TakeWhile<TAny>(this IEnumerable<TAny> sequence, Predicate<TAny> predicate)
         {
-            throw new NotImplementedException();
+            foreach(TAny el in sequence)
+            {
+                if (!predicate(el))
+                    break;
+
+                yield return el;
+            }
         }
 
         /// <summary>
@@ -174,7 +189,13 @@ namespace Iterators
         /// <returns>the new sequence.</returns>
         public static IEnumerable<TAny> TakeSome<TAny>(this IEnumerable<TAny> sequence, long count)
         {
-            throw new NotImplementedException();
+            foreach (var el in sequence)
+            {
+                if (count-- <= 0)
+                    break;
+               
+                yield return el;
+            }
         }
 
         /// <summary>
@@ -184,7 +205,10 @@ namespace Iterators
         /// <returns>an infinite sequence of integers.</returns>
         public static IEnumerable<int> Integers(int start)
         {
-            throw new NotImplementedException();
+            while (true)
+            {
+                yield return start++;
+            }
         }
 
         /// <summary>
