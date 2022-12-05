@@ -16,7 +16,7 @@ namespace Iterators
         /// <typeparam name="TAny">the type of the items in the sequence.</typeparam>
         public static void ForEach<TAny>(this IEnumerable<TAny> sequence, Action<TAny> consumer)
         {
-            throw new NotImplementedException();
+            sequence.ForEach(el => consumer(el));
         }
 
         /// <summary>
@@ -28,8 +28,11 @@ namespace Iterators
         /// <typeparam name="TAny">the type of the items in the sequence.</typeparam>
         /// <returns>the new sequence.</returns>
         public static IEnumerable<TAny> Peek<TAny>(this IEnumerable<TAny> sequence, Action<TAny> consumer)
-        {
-            throw new NotImplementedException();
+        { 
+            foreach(TAny el in sequence){
+                consumer(el);
+                yield return el;
+            }
         }
 
         /// <summary>
@@ -43,7 +46,8 @@ namespace Iterators
         /// <returns>the new sequence.</returns>
         public static IEnumerable<TOther> Map<TAny, TOther>(this IEnumerable<TAny> sequence, Func<TAny, TOther> mapper)
         {
-            throw new NotImplementedException();
+            foreach(TAny el in sequence)
+                yield return mapper.Invoke(el);
         }
 
         /// <summary>
@@ -57,7 +61,10 @@ namespace Iterators
         /// <returns>the new sequence.</returns>
         public static IEnumerable<TAny> Filter<TAny>(this IEnumerable<TAny> sequence, Predicate<TAny> predicate)
         {
-            throw new NotImplementedException();
+            foreach(TAny el in sequence)
+                if (predicate.Invoke(el))
+                    yield return el;
+            
         }
 
         /// <summary>
@@ -68,7 +75,12 @@ namespace Iterators
         /// <returns>the new sequence.</returns>
         public static IEnumerable<Tuple<int, TAny>> Indexed<TAny>(this IEnumerable<TAny> sequence)
         {
-            throw new NotImplementedException();
+            int counter = 0;
+            foreach (TAny el in sequence)
+            {
+                yield return new Tuple<int, TAny>(counter, el);
+                counter++;
+            }
         }
 
         /// <summary>
@@ -83,7 +95,17 @@ namespace Iterators
         /// <returns>the new sequence.</returns>
         public static TOther Reduce<TAny, TOther>(this IEnumerable<TAny> sequence, TOther seed, Func<TOther, TAny, TOther> reducer)
         {
-            throw new NotImplementedException();
+            bool first = false;
+            TOther accumulator = default;
+            foreach(TAny el in sequence)
+            {
+                if (first)
+                    accumulator = reducer(seed, el);
+                else
+                    accumulator = reducer(accumulator, el);
+            }
+
+            return accumulator;
         }
 
         /// <summary>
@@ -97,7 +119,20 @@ namespace Iterators
         /// <returns>the new sequence.</returns>
         public static IEnumerable<TAny> SkipWhile<TAny>(this IEnumerable<TAny> sequence, Predicate<TAny> predicate)
         {
-            throw new NotImplementedException();
+            bool firstSkipped = false;
+
+            foreach(TAny el in sequence)
+            {
+                if (!predicate(el))
+                {
+                    firstSkipped = true;
+                    yield return el;
+                }
+
+                if (firstSkipped)
+                    yield return el;
+                
+            }
         }
 
         /// <summary>

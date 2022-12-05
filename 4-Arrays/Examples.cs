@@ -1,3 +1,4 @@
+using ComplexAlgebra;
 using System;
 
 namespace Arrays
@@ -35,15 +36,15 @@ namespace Arrays
         /// <remarks>This method alters the input array in such a way that the original ordering is lost.</remarks>
         /// <param name="array">an <see cref="Array"/> of <see cref="int"/> to be sorted</param>
         /// <exception cref="NullReferenceException">if the provided <paramref name="array"/> is <code>null</code></exception>
-        public static void BubbleSort(int[] array)
+        public static void BubbleSort(Complex[] array)
         {
             for (int i = 0; i < array.Length; i++)
             {
                 for (int j = i - 1; j >= 0; j--)
                 {
-                    if (array[j + 1] < array[j])
+                    if (array[j + 1].Phase <  array[j].Phase)
                     {
-                        int temp = array[j];
+                        Complex temp = array[j];
                         array[j] = array[j + 1];
                         array[j + 1] = temp;
                     }
